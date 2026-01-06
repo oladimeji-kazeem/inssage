@@ -2,6 +2,7 @@
   "name": "inssage",
   "private": true,
   "version": "0.0.0",
+  "author": "oladimeji-kazeem",
   "type": "module",
   "scripts": {
     "dev": "vite",

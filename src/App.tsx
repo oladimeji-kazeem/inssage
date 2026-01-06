@@ -8,6 +8,7 @@ import { Prompts } from './pages/Prompts';
 import { Integrations } from './pages/Integrations';
 import { Workflows } from './pages/Workflows';
 import { Analytics } from './pages/Analytics';
+import { ControlPlane } from './pages/ControlPlane';
 import { AuditLogs } from './pages/AuditLogs';
 import { MeetingCopilot } from './pages/MeetingCopilot';
 import { Settings } from './pages/Settings';
@@ -25,6 +26,7 @@ function App() {
           <Route path="documents" element={<Documents />} />
           <Route path="prompts" element={<Prompts />} />
           <Route path="analytics" element={<Analytics />} />
+          <Route path="control-plane" element={<ControlPlane />} />
           <Route path="integrations" element={<Integrations />} />
           <Route path="workflows" element={<Workflows />} />
           <Route path="meetings" element={<MeetingCopilot />} />

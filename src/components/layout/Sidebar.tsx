@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
     MessageSquarePlus, Search, FileText, Library, BarChart2,
-    Grid, GitBranch, Mic, Settings, User, ChevronLeft, ChevronRight, LogOut
+    Grid, GitBranch, Mic, Settings, User, ChevronLeft, ChevronRight, LogOut, Shield
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import './Sidebar.css';
@@ -20,6 +20,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         { icon: FileText, label: 'Documents', to: '/documents' },
         { icon: Library, label: 'Prompt Library', to: '/prompts' },
         { icon: BarChart2, label: 'Analytics', to: '/analytics' },
+        { icon: Shield, label: 'Control Plane', to: '/control-plane' },
         { icon: Grid, label: 'Integrations', to: '/integrations' },
         { icon: GitBranch, label: 'Workflows', to: '/workflows' },
         { icon: Mic, label: 'Meeting Copilot', to: '/meetings' },

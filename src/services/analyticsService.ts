@@ -167,6 +167,72 @@ export const analyticsService = {
             await supabase.from('analytics_complex_data').insert(complexData);
         }
 
+        // New Data Check (Control Plane)
+        const { count: controlCount } = await supabase.from('analytics_complex_data')
+            .select('*', { count: 'exact', head: true })
+            .eq('chart_id', 'risk_heatmap');
+
+        if (!controlCount || controlCount === 0) {
+            console.log('Seeding Control Plane Data...');
+
+            // 1. Risk Data
+            // Heatmap (Complex)
+            const riskHeatmap = Array.from({ length: 20 }).map((_, i) => ({
+                category: 'control_risk',
+                chart_id: 'risk_heatmap',
+                data_point: {
+                    id: i,
+                    name: `Risk-${i + 1}`,
+                    likelihood: Math.floor(Math.random() * 5) + 1,
+                    impact: Math.floor(Math.random() * 5) + 1,
+                    category: ['Operational', 'Financial', 'Strategic', 'Compliance'][Math.floor(Math.random() * 4)],
+                    owner: ['Finance', 'IT', 'Legal', 'HR'][Math.floor(Math.random() * 4)]
+                }
+            }));
+            await supabase.from('analytics_complex_data').insert(riskHeatmap);
+
+            // Risk Trend (Trends)
+            const riskTrend = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'].map((m, i) => ({
+                category: 'control_risk', chart_id: 'risk_velocity', period: m, value: 50 + (Math.sin(i) * 10) + i, extra_value: 45 // Target
+            }));
+            await supabase.from('analytics_trends').insert(riskTrend);
+
+            // 2. Audit Data
+            // Findings Breakdown (Categories)
+            const auditFindings = [
+                { category: 'control_audit', chart_id: 'audit_findings', label: 'High', value: 8, color: '#ef4444' },
+                { category: 'control_audit', chart_id: 'audit_findings', label: 'Medium', value: 12, color: '#f59e0b' },
+                { category: 'control_audit', chart_id: 'audit_findings', label: 'Low', value: 4, color: '#3b82f6' },
+            ];
+            await supabase.from('analytics_categories').insert(auditFindings);
+
+            // Audit Progress (Categories - using label as Month/Stage if needed, or stick to Categories)
+            // Actually, for "Planned vs Completed", let's use Categories with custom labels
+            const auditProgress = [
+                { category: 'control_audit', chart_id: 'audit_progress', label: 'Financial', value: 100, color: '#10b981' }, // 100% complete
+                { category: 'control_audit', chart_id: 'audit_progress', label: 'Operational', value: 65, color: '#3b82f6' },
+                { category: 'control_audit', chart_id: 'audit_progress', label: 'IT Security', value: 30, color: '#f59e0b' },
+                { category: 'control_audit', chart_id: 'audit_progress', label: 'Compliance', value: 0, color: '#9ca3af' },
+            ];
+            await supabase.from('analytics_categories').insert(auditProgress);
+
+            // 3. Compliance Data
+            // Framework Scores (Categories)
+            const complianceScores = [
+                { category: 'control_compliance', chart_id: 'compliance_frameworks', label: 'SOC2', value: 92, color: '#10b981' },
+                { category: 'control_compliance', chart_id: 'compliance_frameworks', label: 'ISO 27001', value: 88, color: '#3b82f6' },
+                { category: 'control_compliance', chart_id: 'compliance_frameworks', label: 'GDPR', value: 95, color: '#8b5cf6' },
+                { category: 'control_compliance', chart_id: 'compliance_frameworks', label: 'HIPAA', value: 100, color: '#ef4444' }, // Maybe Critical?
+            ];
+            await supabase.from('analytics_categories').insert(complianceScores);
+
+            // Compliance Trend (Trends)
+            const complianceTrend = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'].map((m, i) => ({
+                category: 'control_compliance', chart_id: 'compliance_trend', period: m, value: 85 + (i * 2)
+            }));
+            await supabase.from('analytics_trends').insert(complianceTrend);
+        }
+
 
 
 
@@ -333,6 +399,59 @@ export const analyticsService = {
             ];
             await supabase.from('analytics_complex_data').insert(complexData);
         }
+
+        // 5. Expansion Charts Seeding (New Charts) - Independent Block
+        const { count: expCount } = await supabase.from('analytics_categories').select('*', { count: 'exact', head: true }).eq('category', 'risk_categories');
+
+        if (!expCount || expCount === 0) {
+            const extensionCategories = [
+                // Risk Categories (Pie)
+                { chart_id: 'control_risk', category: 'risk_categories', label: 'Strategic', value: 30, color: '#3b82f6' },
+                { chart_id: 'control_risk', category: 'risk_categories', label: 'Operational', value: 45, color: '#f59e0b' },
+                { chart_id: 'control_risk', category: 'risk_categories', label: 'Financial', value: 15, color: '#10b981' },
+                { chart_id: 'control_risk', category: 'risk_categories', label: 'Compliance', value: 10, color: '#ef4444' },
+
+                // Risk Mitigation (Bar)
+                { chart_id: 'control_risk', category: 'risk_mitigation', label: 'Mitigated', value: 45, color: '#10b981' },
+                { chart_id: 'control_risk', category: 'risk_mitigation', label: 'In Progress', value: 30, color: '#3b82f6' },
+                { chart_id: 'control_risk', category: 'risk_mitigation', label: 'Accepted', value: 15, color: '#f59e0b' },
+                { chart_id: 'control_risk', category: 'risk_mitigation', label: 'Open', value: 10, color: '#ef4444' },
+
+                // Audit by Department (Bar)
+                { chart_id: 'control_audit', category: 'audit_by_dept', label: 'Finance', value: 8, color: '#3b82f6' },
+                { chart_id: 'control_audit', category: 'audit_by_dept', label: 'IT', value: 12, color: '#ef4444' },
+                { chart_id: 'control_audit', category: 'audit_by_dept', label: 'HR', value: 4, color: '#10b981' },
+                { chart_id: 'control_audit', category: 'audit_by_dept', label: 'Ops', value: 6, color: '#f59e0b' },
+
+                // Policy Status (Pie)
+                { chart_id: 'control_compliance', category: 'policy_status', label: 'Reviewed', value: 45, color: '#10b981' },
+                { chart_id: 'control_compliance', category: 'policy_status', label: 'Outdated', value: 5, color: '#ef4444' },
+                { chart_id: 'control_compliance', category: 'policy_status', label: 'Draft', value: 12, color: '#f59e0b' },
+                { chart_id: 'control_compliance', category: 'policy_status', label: 'Pending', value: 8, color: '#3b82f6' }
+            ];
+            await supabase.from('analytics_categories').insert(extensionCategories);
+
+            const extensionTrends = [
+                // Audit Trend
+                { chart_id: 'control_audit', category: 'audit_trend', label: 'New Findings', period: 'Jan', value: 12, extra_value: 10 },
+                { chart_id: 'control_audit', category: 'audit_trend', label: 'Closed Findings', period: 'Jan', value: 10, extra_value: 12 },
+                { chart_id: 'control_audit', category: 'audit_trend', label: 'New Findings', period: 'Feb', value: 15, extra_value: 8 },
+                { chart_id: 'control_audit', category: 'audit_trend', label: 'Closed Findings', period: 'Feb', value: 14, extra_value: 15 },
+                { chart_id: 'control_audit', category: 'audit_trend', label: 'New Findings', period: 'Mar', value: 8, extra_value: 12 },
+                { chart_id: 'control_audit', category: 'audit_trend', label: 'Closed Findings', period: 'Mar', value: 12, extra_value: 8 },
+            ];
+            await supabase.from('analytics_trends').insert(extensionTrends);
+
+            const extensionComplex = [
+                // Control Effectiveness (Grouped Bar Data)
+                { category: 'control_compliance', chart_id: 'control_effectiveness', data_point: { name: 'Access Control', Design: 95, Operating: 92 } },
+                { category: 'control_compliance', chart_id: 'control_effectiveness', data_point: { name: 'Data Encrypt', Design: 100, Operating: 100 } },
+                { category: 'control_compliance', chart_id: 'control_effectiveness', data_point: { name: 'Vendor Mgmt', Design: 85, Operating: 80 } },
+                { category: 'control_compliance', chart_id: 'control_effectiveness', data_point: { name: 'Change Mgmt', Design: 90, Operating: 88 } },
+            ];
+            await supabase.from('analytics_complex_data').insert(extensionComplex);
+        }
+
         console.log('Seeding Complete!');
     }
 };
