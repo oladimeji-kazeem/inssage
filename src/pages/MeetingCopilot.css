@@ -1,0 +1,113 @@
+.meeting-page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.meeting-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-6);
+    padding-bottom: var(--spacing-4);
+    border-bottom: 1px solid var(--color-divider);
+}
+
+.meeting-grid {
+    display: flex;
+    gap: var(--spacing-6);
+    flex: 1;
+    overflow: hidden;
+}
+
+.transcript-panel {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.transcript-stream {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    margin-top: var(--spacing-4);
+}
+
+.transcript-item {
+    padding: var(--spacing-3);
+    border-radius: var(--radius-md);
+}
+
+.transcript-item:hover {
+    background-color: var(--color-bg-hover);
+}
+
+.transcript-item.highlight {
+    background-color: var(--color-governance-green-bg);
+    /* Or amber for warning */
+    background-color: rgba(245, 158, 11, 0.1);
+    /* Amber tint */
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.transcript-item .speaker {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-secondary);
+    margin-bottom: 2px;
+}
+
+.transcript-item.typing {
+    opacity: 0.5;
+}
+
+.meeting-sidebar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+}
+
+.sidebar-section {}
+
+.section-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-3);
+}
+
+.action-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+}
+
+.action-list li {
+    display: flex;
+    gap: var(--spacing-2);
+    align-items: start;
+    font-size: var(--font-size-sm);
+}
+
+.data-card {
+    background-color: var(--color-bg-hover);
+    padding: var(--spacing-3);
+    border-radius: var(--radius-md);
+}
+
+.data-title {
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-1);
+}
+
+.data-snippet {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    font-style: italic;
+}

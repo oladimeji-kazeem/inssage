@@ -1,0 +1,207 @@
+.chat-layout {
+    display: flex;
+    height: 100%;
+    gap: var(--spacing-6);
+    position: relative;
+}
+
+.chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.chat-header {
+    padding: var(--spacing-4);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.chat-thread {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+}
+
+.message-row {
+    display: flex;
+}
+
+.message-row.user {
+    justify-content: flex-end;
+}
+
+.message-row.assistant {
+    justify-content: flex-start;
+}
+
+.message-bubble {
+    max-width: 80%;
+    padding: var(--spacing-4);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+}
+
+.message-bubble.user {
+    background-color: var(--color-bg-active);
+    /* Or primary slightly darker? Standard UI uses gray/blue */
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-primary);
+    border-top-right-radius: 2px;
+}
+
+.message-bubble.assistant {
+    background-color: transparent;
+    padding: 0;
+    /* Remove padding for assistant to look like text stream in some designs, or keep bubble? */
+    /* Reverting to bubble for clarity */
+    background-color: transparent;
+    padding: 0;
+    max-width: 90%;
+}
+
+/* Wait, assistant usually has no bubble bg in Notion AI / Claude style, just text */
+/* But 'Notion + Linear + OpenAI style' */
+/* OpenAI uses no bubble for assistant, just text + icon. */
+
+.message-bubble.assistant .message-content {
+    margin-bottom: var(--spacing-2);
+}
+
+.message-citations {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2);
+    margin-bottom: var(--spacing-2);
+}
+
+.message-badges {
+    display: flex;
+    gap: var(--spacing-2);
+}
+
+
+.chat-input-area {
+    padding: var(--spacing-4);
+    background-color: var(--color-bg-surface);
+    border-top: 1px solid var(--color-border);
+}
+
+.chat-input-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-body);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-2);
+    gap: var(--spacing-2);
+    transition: border-color 0.2s;
+}
+
+.chat-input-wrapper:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.chat-input-field {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: var(--font-size-base);
+    padding: var(--spacing-1) var(--spacing-2);
+    outline: none;
+    color: var(--color-text-primary);
+}
+
+.voice-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-secondary);
+    transition: all 0.2s;
+}
+
+.voice-btn:hover {
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-primary);
+}
+
+.voice-btn.recording {
+    background-color: var(--color-enforcement-red-bg);
+    color: var(--color-enforcement-red-text);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Context Panel */
+.context-panel {
+    width: 300px;
+    background-color: var(--color-bg-surface);
+    /* Or slightly different */
+    border-left: 1px solid var(--color-border);
+    padding: var(--spacing-4);
+    /* If context panel is separate from chat main, it shouldn't be inside chat-main border. */
+    /* In my layout, chat-main and context-panel are siblings in chat-layout. */
+    /* chat-layout is height 100%. */
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+    overflow-y: auto;
+}
+
+.context-section {}
+
+.context-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+}
+
+.context-card {
+    padding: var(--spacing-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-body);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.context-card:hover {
+    border-color: var(--color-primary);
+}
+
+.voice-overlay {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 16px;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+}

@@ -1,0 +1,115 @@
+.workflows-page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.workflow-canvas {
+    flex: 1;
+    background-color: var(--color-bg-body);
+    /* Dot pattern would be nice */
+    background-image: radial-gradient(var(--color-border) 1px, transparent 1px);
+    background-size: 20px 20px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.flow-node {
+    position: absolute;
+    width: 200px;
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    z-index: 10;
+}
+
+.node-header {
+    background-color: var(--color-bg-hover);
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-secondary);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.node-body {
+    padding: var(--spacing-3);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+}
+
+.trigger .node-header {
+    color: var(--color-primary);
+}
+
+.condition .node-header {
+    color: var(--color-compliance-amber-text);
+}
+
+.action .node-header {
+    color: var(--color-text-primary);
+}
+
+.approval .node-header {
+    color: var(--color-governance-green-text);
+}
+
+.blocker .node-header {
+    color: var(--color-enforcement-red-text);
+}
+
+.connection-line-vertical {
+    position: absolute;
+    width: 2px;
+    background-color: var(--color-border);
+    z-index: 1;
+}
+
+.connection-line-horizontal {
+    position: absolute;
+    height: 2px;
+    background-color: var(--color-border);
+    z-index: 1;
+}
+
+.connector-top,
+.connector-bottom,
+.connector-left,
+.connector-right {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: var(--color-text-secondary);
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.connector-top {
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.connector-bottom {
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.connector-right {
+    top: 50%;
+    right: -6px;
+    transform: translateY(-50%);
+}
+
+.connector-left {
+    top: 50%;
+    left: -6px;
+    transform: translateY(-50%);
+}

@@ -1,0 +1,98 @@
+:root {
+  /* Colors */
+  --color-primary: #0066FF; /* Primary Blue for action buttons */
+  --color-primary-hover: #0052cc;
+  --color-primary-text: #FFFFFF;
+
+  --color-bg-body: #FFFFFF; /* Light mode body bg */
+  --color-bg-surface: #F9FAFB; /* Card/Sidebar bg */
+  --color-bg-hover: #F3F4F6;
+  --color-bg-active: #E5E7EB;
+
+  --color-text-primary: #111827;
+  --color-text-secondary: #4B5563;
+  --color-text-tertiary: #9CA3AF;
+
+  --color-border: #E5E7EB;
+  --color-divider: #F3F4F6;
+
+  /* Governance Colors */
+  --color-governance-green: #10B981;
+  --color-governance-green-bg: #D1FAE5;
+  --color-governance-green-text: #065F46;
+
+  --color-compliance-amber: #F59E0B;
+  --color-compliance-amber-bg: #FEF3C7;
+  --color-compliance-amber-text: #92400E;
+
+  --color-enforcement-red: #EF4444;
+  --color-enforcement-red-bg: #FEE2E2;
+  --color-enforcement-red-text: #B91C1C;
+
+  /* Typography */
+  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-mono: 'IBM Plex Mono', monospace;
+
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem;    /* 16px */
+  --font-size-lg: 1.125rem;  /* 18px */
+  --font-size-xl: 1.25rem;   /* 20px */
+  --font-size-2xl: 1.5rem;   /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Spacing (8pt grid) */
+  --spacing-1: 0.25rem; /* 4px */
+  --spacing-2: 0.5rem;  /* 8px */
+  --spacing-3: 0.75rem; /* 12px */
+  --spacing-4: 1rem;    /* 16px */
+  --spacing-5: 1.25rem; /* 20px */
+  --spacing-6: 1.5rem;  /* 24px */
+  --spacing-8: 2rem;    /* 32px */
+  --spacing-10: 2.5rem; /* 40px */
+  --spacing-12: 3rem;   /* 48px */
+
+  /* Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Dark Mode Variations */
+.dark {
+  --color-bg-body: #0F172A; /* Deep Charcoal */
+  --color-bg-surface: #1E293B;
+  --color-bg-hover: #334155;
+  --color-bg-active: #475569;
+
+  --color-text-primary: #F9FAFB;
+  --color-text-secondary: #D1D5DB;
+  --color-text-tertiary: #9CA3AF;
+
+  --color-border: #334155;
+  --color-divider: #1E293B;
+
+  --color-primary: #3B82F6;
+  --color-primary-hover: #2563EB;
+
+  --color-governance-green-bg: #064E3B;
+  --color-governance-green-text: #34D399;
+
+  --color-compliance-amber-bg: #78350F;
+  --color-compliance-amber-text: #FBBF24;
+
+  --color-enforcement-red-bg: #7F1D1D;
+  --color-enforcement-red-text: #F87171;
+}

@@ -1,0 +1,39 @@
+.integration-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-bg-hover);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-4);
+}
+
+/* Pseudo-branding colors */
+.workday-icon {
+    background-color: #0051E7;
+    color: white;
+}
+
+.slack-icon {
+    background-color: #4A154B;
+    color: white;
+}
+
+.salesforce-icon {
+    background-color: #00A1E0;
+    color: white;
+}
+
+.jira-icon {
+    background-color: #0052CC;
+    color: white;
+}
+
+.googleworkspace-icon {
+    background-color: #EA4335;
+    color: white;
+}
