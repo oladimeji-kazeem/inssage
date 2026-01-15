@@ -2,22 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { Card } from '../components/ui/Card';
 import { Tabs } from '../components/ui/Tabs';
 import { Select } from '../components/ui/Select';
-import { Shield, AlertTriangle, CheckCircle, Activity, Lock, TrendingUp, AlertCircle, Database } from 'lucide-react';
+import { Shield, AlertTriangle, CheckCircle, Activity, Lock, TrendingUp, AlertCircle, Database, UserCheck } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ScatterChart, Scatter, Cell, RadialBarChart, RadialBar, Legend, BarChart, Bar, PieChart, Pie } from 'recharts';
 import './Analytics.css';
 import { analyticsService } from '../services/analyticsService';
-import type { AnalyticsCategory, AnalyticsTrend, AnalyticsComplex } from '../services/analyticsService';
 import { seedDatabase } from '../utils/seeder';
 
 export const ControlPlane = () => {
-    const [activeTab, setActiveTab] = useState('risk');
+    const [activeTab, setActiveTab] = useState<'risk' | 'audit' | 'compliance' | 'people'>('risk');
     // const [loading, setLoading] = useState(true); // Removed unused loading state
 
     // Filters
     const [year, setYear] = useState('2024');
     const [department, setDepartment] = useState('all');
 
-    // Data State
     // Data State
     const [data, setData] = useState<{
         riskHeatmap: any[];
@@ -30,8 +28,8 @@ export const ControlPlane = () => {
         riskMitigation: any[];
 
         riskKpis: any[];
-        auditKpis: any[]; // NEW
-        complianceKpis: any[]; // NEW
+        auditKpis: any[];
+        complianceKpis: any[];
         riskByDept: any[];
         auditTrend: any[];
         auditByDept: any[];
@@ -48,8 +46,8 @@ export const ControlPlane = () => {
         riskMitigation: [],
 
         riskKpis: [],
-        auditKpis: [], // NEW
-        complianceKpis: [], // NEW
+        auditKpis: [],
+        complianceKpis: [],
         riskByDept: [],
         auditTrend: [],
         auditByDept: [],
@@ -63,12 +61,23 @@ export const ControlPlane = () => {
     const [riskTable, setRiskTable] = useState<any[]>([]);
     const [auditTable, setAuditTable] = useState<any[]>([]);
     const [policyTable, setPolicyTable] = useState<any[]>([]);
+
+    const [employeeTable, setEmployeeTable] = useState<any[]>([]);
+    const [initialEmployees, setInitialEmployees] = useState<any[]>([]); // New: Store original list for filtering
+    const [peopleMetrics, setPeopleMetrics] = useState({
+        highRiskEmployees: 0,
+        trainingCompletion: 0,
+        pendingAttestations: 0,
+        avgSecurityScore: 0
+    });
     const [loading, setLoading] = useState(true);
+
 
     const tabs = [
         { id: 'risk', label: 'Risk Management' },
         { id: 'audit', label: 'Internal Audit' },
         { id: 'compliance', label: 'Regulatory Compliance' },
+        { id: 'people', label: 'People Assurance' }, // New Tab
     ];
 
     useEffect(() => {
@@ -83,23 +92,21 @@ export const ControlPlane = () => {
                 const riskTrend = await analyticsService.getTrends('risk_velocity');
                 const riskCategories = await analyticsService.getCategories('risk_categories');
                 const riskMitigation = await analyticsService.getCategories('risk_mitigation');
-                const riskKpis = await analyticsService.getKPIs('risk_management'); // NEW
+                const riskKpis = await analyticsService.getKPIs('risk_management');
 
                 // 2. Audit
                 const auditFindings = await analyticsService.getCategories('audit_findings');
                 const auditProgress = await analyticsService.getCategories('audit_progress');
                 const auditTrend = await analyticsService.getTrends('audit_trend');
                 const auditByDept = await analyticsService.getCategories('audit_by_department');
-                const auditKpis = await analyticsService.getKPIs('audit'); // NEW
+                const auditKpis = await analyticsService.getKPIs('audit');
 
                 // 3. Compliance
                 const complianceFrameworks = await analyticsService.getCategories('compliance_frameworks');
                 const complianceTrend = await analyticsService.getTrends('compliance_trend');
                 const policyStatus = await analyticsService.getCategories('policy_status');
-                const complianceKpis = await analyticsService.getKPIs('compliance'); // NEW
+                const complianceKpis = await analyticsService.getKPIs('compliance');
                 const controlEffectiveness = await analyticsService.getComplexData('control_effectiveness');
-                // const auditDetails = ... (Removed, using direct table fetch)
-                // const policyDetails = ... (Removed, using direct table fetch)
 
                 const fetchedData = {
                     riskHeatmap: riskHeatmap.map((d: any) => d),
@@ -107,37 +114,43 @@ export const ControlPlane = () => {
                     riskCategories: riskCategories.map((d: any) => ({ name: d.label, value: d.value, color: d.color })),
                     riskMitigation: riskMitigation.map((d: any) => ({ name: d.label, value: d.value, color: d.color })),
 
-                    riskKpis: riskKpis.map((d: any) => d), // NEW
+                    riskKpis: riskKpis.map((d: any) => d),
                     auditFindings: auditFindings.map((d: any) => ({ name: d.label, value: d.value, color: d.color })),
 
                     auditProgress: auditProgress.map((d: any) => ({ name: d.label, completed: d.value, remaining: 100 - d.value })),
                     auditTrend: auditTrend.map((d: any) => ({ ...d })),
                     auditByDept: auditByDept.map((d: any) => ({ name: d.label, value: d.value, color: d.color })),
-                    auditKpis: auditKpis.map((d: any) => d), // NEW
+                    auditKpis: auditKpis.map((d: any) => d),
                     complianceFrameworks: complianceFrameworks.map((d: any) => ({ name: d.label, score: d.value, fill: d.color })),
                     complianceTrend: complianceTrend.map((d: any) => ({ ...d })),
                     policyStatus: policyStatus.map((d: any) => ({ name: d.label, value: d.value, color: d.color })),
-                    complianceKpis: complianceKpis.map((d: any) => d), // NEW
+                    complianceKpis: complianceKpis.map((d: any) => d),
                     controlEffectiveness: controlEffectiveness.map((d: any) => d),
-                    riskByDept: [] // Placeholder
+                    riskByDept: []
                 };
                 setInitialData(fetchedData);
                 setData(fetchedData);
 
                 // Set Table Data
-                // Seed GRC Data
+                // Seed GRC Data (Including Employees and Documents)
                 await analyticsService.seedGRCData();
+                await analyticsService.seedDocumentsData(); // Ensure documents/employees seeded
 
                 // Fetch GRC Data
                 const risks = await analyticsService.getGRCData('risks');
-                // const controls = await analyticsService.getGRCData('controls'); // Not yet visualized
-                const audits = await analyticsService.getGRCData('internal_audits');
+                // const audits = await analyticsService.getGRCData('internal_audits'); // Removed unused
                 const findings = await analyticsService.getGRCData('audit_findings');
                 const policies = await analyticsService.getGRCData('compliance_policies');
 
+                // Fetch Employees & Metrics
+                const employees = await analyticsService.getEmployeesData();
+                // pMetrics are calculated on the fly now
+
                 setRiskTable(risks);
-                setAuditTable(findings); // Use findings for the log
+                setAuditTable(findings);
                 setPolicyTable(policies);
+                setInitialEmployees(employees); // Store raw data
+                setEmployeeTable(employees); // Initial render
 
                 setLoading(false);
             } catch (error) {
@@ -201,7 +214,7 @@ export const ControlPlane = () => {
 
         filtered.auditTrend = initialData.auditTrend.map((t: any) => ({
             ...t,
-            value: Math.floor(t.value * (isHistorical ? 1.1 : 1) * (isDeptSelected ? 0.25 : 1)), // More findings last year?
+            value: Math.floor(t.value * (isHistorical ? 1.1 : 1) * (isDeptSelected ? 0.25 : 1)),
             extra_value: Math.floor(t.extra_value * (isHistorical ? 0.9 : 1) * (isDeptSelected ? 0.25 : 1))
         }));
 
@@ -209,7 +222,7 @@ export const ControlPlane = () => {
         if (isDeptSelected) {
             filtered.auditByDept = initialData.auditByDept.filter((item: any) => item.name.toLowerCase().includes(d));
         } else {
-            filtered.auditByDept = process(initialData.auditByDept); // Just year affect
+            filtered.auditByDept = process(initialData.auditByDept);
         }
 
         // 3. Compliance Tab
@@ -219,7 +232,7 @@ export const ControlPlane = () => {
         filtered.controlEffectiveness = initialData.controlEffectiveness.map((i: any) => ({
             ...i,
             Design: Math.floor(i.Design * (isHistorical ? 0.95 : 1)),
-            Operating: Math.floor(i.Operating * (isHistorical ? 0.88 : 1)) // Lower operating effectiveness in past
+            Operating: Math.floor(i.Operating * (isHistorical ? 0.88 : 1))
         }));
 
         filtered.complianceTrend = initialData.complianceTrend.map((t: any) => ({
@@ -227,11 +240,52 @@ export const ControlPlane = () => {
             value: Math.min(100, Math.floor(t.value * (isHistorical ? 0.92 : 1)))
         }));
 
-        setData(filtered);
-    }, [initialData, year, department]);
+        // 4. People Tab Filtering
+        let filteredEmployees = [...initialEmployees];
 
-    // Filter Logic (Mock implementation for UI demo)
-    // const filteredRisks = data.riskHeatmap; 
+        if (isDeptSelected) {
+            // Check against department prop and map common abbreviations
+            const deptMap: Record<string, string> = {
+                'it': 'Engineering', // Map 'it' filter to 'Engineering' data
+                'finance': 'Finance',
+                'hr': 'HR',
+                'ops': 'Operations',
+                'sales': 'Sales'
+            };
+            const targetDept = deptMap[d] || d; // Use mapped name or raw filter value
+
+            filteredEmployees = filteredEmployees.filter(e =>
+                e.department?.toLowerCase() === targetDept.toLowerCase() ||
+                (targetDept === 'Engineering' && e.department === 'Security') // Include security in IT/Eng
+            );
+        }
+
+        setEmployeeTable(filteredEmployees);
+
+        // Recalculate Metrics based on Filtered Employees
+        const highRiskCount = filteredEmployees.filter(e => (e.risk_score || 0) > 50).length;
+        const trainedCount = filteredEmployees.filter(e => e.last_security_training).length;
+        const totalCount = filteredEmployees.length || 1;
+        const trainingRate = Math.round((trainedCount / totalCount) * 100);
+
+        // Approx recalculation for pending attestations (Mocked logic for UI responsiveness)
+        // In real app, we'd filter acknowledgments too.
+        const pending = Math.round(filteredEmployees.length * 1.5); // Mock: ~1.5 pending per employee
+
+        const totalRisk = filteredEmployees.reduce((sum, e) => sum + (e.risk_score || 0), 0);
+        const avgRisk = Math.round(totalRisk / totalCount);
+        const securityScore = Math.max(0, 100 - avgRisk);
+
+        setPeopleMetrics({
+            highRiskEmployees: highRiskCount,
+            trainingCompletion: trainingRate,
+            pendingAttestations: pending,
+            avgSecurityScore: securityScore
+        });
+
+        setData(filtered);
+    }, [initialData, year, department, initialEmployees]);
+
 
     return (
         <div className="analytics-container">
@@ -277,7 +331,7 @@ export const ControlPlane = () => {
                 />
             </div>
 
-            <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+            <Tabs tabs={tabs} activeTab={activeTab} onTabChange={(id) => setActiveTab(id as any)} />
 
             <div className="analytics-content">
                 {loading ? (
@@ -307,7 +361,6 @@ export const ControlPlane = () => {
                                             </Card>
                                         ))
                                     ) : (
-                                        // Fallback if no data (though seeding should prevent this)
                                         <Card>
                                             <div className="metric-header"><span className="metric-title">Loading Metrics...</span></div>
                                         </Card>
@@ -315,7 +368,7 @@ export const ControlPlane = () => {
                                 </div>
 
                                 <div className="charts-grid two-columns">
-                                    {/* NEW: Risk Categories Chart */}
+                                    {/* Risk Categories Chart */}
                                     <Card className="chart-card">
                                         <h3 className="chart-title">Risk Distribution by Category</h3>
                                         <div className="chart-container">
@@ -341,7 +394,7 @@ export const ControlPlane = () => {
                                         </div>
                                     </Card>
 
-                                    {/* NEW: Mitigation Status Chart */}
+                                    {/* Mitigation Status Chart */}
                                     <Card className="chart-card">
                                         <h3 className="chart-title">Mitigation Status</h3>
                                         <div className="chart-container">
@@ -416,7 +469,7 @@ export const ControlPlane = () => {
                                     </Card>
                                 </div>
 
-                                {/* NEW: Risk Register Table */}
+                                {/* Risk Register Table */}
                                 <Card className="table-card" style={{ marginTop: '20px' }}>
                                     <h3 className="chart-title">Risk Register</h3>
                                     <div className="table-container">
@@ -533,7 +586,7 @@ export const ControlPlane = () => {
                                     </Card>
                                 </div>
 
-                                {/* NEW: Audit Findings Log Table */}
+                                {/* Audit Findings Log Table */}
                                 <Card className="table-card" style={{ marginTop: '20px' }}>
                                     <h3 className="chart-title">Audit Findings Log</h3>
                                     <div className="table-container">
@@ -615,7 +668,7 @@ export const ControlPlane = () => {
                                         </div>
                                     </Card>
 
-                                    {/* NEW: Policy Review Status Chart */}
+                                    {/* Policy Review Status Chart */}
                                     <Card className="chart-card">
                                         <h3 className="chart-title">Policy Review Status</h3>
                                         <div className="chart-container">
@@ -643,7 +696,7 @@ export const ControlPlane = () => {
                                 </div>
 
                                 <div className="charts-grid two-columns">
-                                    {/* NEW: Control Effectiveness Chart */}
+                                    {/* Control Effectiveness Chart */}
                                     <Card className="chart-card">
                                         <h3 className="chart-title">Control Effectiveness</h3>
                                         <div className="chart-container">
@@ -677,37 +730,121 @@ export const ControlPlane = () => {
                                     </Card>
                                 </div>
 
-                                {/* NEW: Policy List Table */}
+                                {/* Policy List Table */}
                                 <Card className="table-card" style={{ marginTop: '20px' }}>
                                     <h3 className="chart-title">Policy Compliance List</h3>
                                     <div className="table-container">
                                         <table className="analytics-table">
                                             <thead>
                                                 <tr>
-                                                    <th>Policy Name</th>
+                                                    <th>Policy Code</th>
                                                     <th>Version</th>
                                                     <th>Status</th>
                                                     <th>Last Review</th>
-                                                    <th>Action</th>
+                                                    <th>Next Review</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {policyTable.map((policy, i) => (
                                                     <tr key={i}>
                                                         <td>
-                                                            <div style={{ fontWeight: '500' }}>{policy.policy_code}</div>
-                                                            <div style={{ fontSize: '11px', color: '#6b7280' }}>{policy.title}</div>
+                                                            <div style={{ fontWeight: 600 }}>{policy.policy_code}</div>
+                                                            <div style={{ fontSize: '12px', color: '#666' }}>{policy.title}</div>
                                                         </td>
                                                         <td>{policy.version}</td>
                                                         <td>
-                                                            <span className={`status-badge ${policy.status === 'Active' ? 'positive' : policy.status === 'Draft' ? 'warning' : 'neutral'}`}>
+                                                            <span className={`status-badge ${policy.status === 'Active' ? 'positive' : 'warning'}`}>
                                                                 {policy.status}
                                                             </span>
                                                         </td>
                                                         <td>{policy.last_review_date}</td>
+                                                        <td>{policy.next_review_date}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </Card>
+                            </>
+                        )}
+
+                        {activeTab === 'people' && (
+                            <>
+                                <div className="metrics-grid metrics-grid-4">
+                                    <Card className="metric-card">
+                                        <div className="metric-header">
+                                            <span className="metric-title">High Risk Employees</span>
+                                            <AlertTriangle size={16} className="metric-icon negative" />
+                                        </div>
+                                        <div className="metric-value">{peopleMetrics.highRiskEmployees}</div>
+                                        <div className="metric-trend negative"><span>Risk Score &gt; 50</span></div>
+                                    </Card>
+                                    <Card className="metric-card">
+                                        <div className="metric-header">
+                                            <span className="metric-title">Training Completion</span>
+                                            <CheckCircle size={16} className="metric-icon positive" />
+                                        </div>
+                                        <div className="metric-value">{peopleMetrics.trainingCompletion}%</div>
+                                        <div className="metric-trend positive"><span>Target: 95%</span></div>
+                                    </Card>
+                                    <Card className="metric-card">
+                                        <div className="metric-header">
+                                            <span className="metric-title">Pending Attestations</span>
+                                            <Activity size={16} className="metric-icon warning" />
+                                        </div>
+                                        <div className="metric-value">{peopleMetrics.pendingAttestations}</div>
+                                        <div className="metric-trend warning"><span>Require Follow-up</span></div>
+                                    </Card>
+                                    <Card className="metric-card">
+                                        <div className="metric-header">
+                                            <span className="metric-title">Avg Security Score</span>
+                                            <Shield size={16} className="metric-icon positive" />
+                                        </div>
+                                        <div className="metric-value">{peopleMetrics.avgSecurityScore}/100</div>
+                                        <div className="metric-trend neutral"><span>Stable</span></div>
+                                    </Card>
+                                </div>
+
+                                <Card className="table-card" style={{ marginTop: '20px' }}>
+                                    <h3 className="chart-title">People Assurance Roster</h3>
+                                    <div className="table-container">
+                                        <table className="analytics-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Employee</th>
+                                                    <th>Role</th>
+                                                    <th>Department</th>
+                                                    <th>Status</th>
+                                                    <th>Risk Score</th>
+                                                    <th>Last Training</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {employeeTable.map((emp, i) => (
+                                                    <tr key={i}>
+                                                        <td style={{ fontWeight: 500 }}>{emp.full_name}</td>
+                                                        <td>{emp.role}</td>
+                                                        <td>{emp.department}</td>
                                                         <td>
-                                                            <button className="btn-secondary" style={{ padding: '4px 8px', fontSize: '12px' }}>View</button>
+                                                            <span className={`status-badge ${emp.status === 'Active' ? 'positive' : 'neutral'}`}>
+                                                                {emp.status}
+                                                            </span>
                                                         </td>
+                                                        <td>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                                <div style={{
+                                                                    width: '40px', height: '6px', borderRadius: '3px',
+                                                                    backgroundColor: '#eee', overflow: 'hidden'
+                                                                }}>
+                                                                    <div style={{
+                                                                        width: `${emp.risk_score}%`, height: '100%',
+                                                                        backgroundColor: emp.risk_score > 30 ? '#ef4444' : '#10b981'
+                                                                    }} />
+                                                                </div>
+                                                                <span style={{ color: emp.risk_score > 30 ? '#ef4444' : '#666' }}>{emp.risk_score}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td>{emp.last_security_training || 'N/A'}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -722,4 +859,3 @@ export const ControlPlane = () => {
         </div>
     );
 };
-

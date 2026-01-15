@@ -2285,4 +2285,201 @@ export const analyticsService = {
             { policy_code: 'POL-DAT-02', title: 'Data Retention Policy', version: '1.2', status: 'Under Review', last_review_date: '2022-12-01', next_review_date: '2023-12-01', owner: 'Legal' }
         ], { onConflict: 'policy_code' });
     },
+
+    // --- Documents & Employee GRC ---
+
+    async getEmployeesData() {
+        const { data, error } = await supabase.from('employees').select('*').order('full_name', { ascending: true });
+        if (error) throw error;
+        return data;
+    },
+
+    async getDocumentsData() {
+        // Fetch documents with owner details
+        const { data, error } = await supabase
+            .from('documents')
+            .select(`
+                *,
+                owner:employees!owner_id(full_name, department)
+            `)
+            .order('created_at', { ascending: false });
+        if (error) throw error;
+        return data;
+    },
+
+    async seedDocumentsData() {
+        console.log('Seeding Documents & Employee Data...');
+
+        // 1. Employees (More varied dataset)
+        const employeesList = [
+            { email: 'sarah.connor@inssage.com', full_name: 'Sarah Connor', department: 'Engineering', role: 'Security Engineer', status: 'Active', risk_score: 12, last_security_training: '2025-01-10' },
+            { email: 'john.doe@inssage.com', full_name: 'John Doe', department: 'HR', role: 'HR Manager', status: 'Active', risk_score: 5, last_security_training: '2024-11-20' },
+            { email: 'michael.scott@inssage.com', full_name: 'Michael Scott', department: 'Sales', role: 'Regional Manager', status: 'Active', risk_score: 85, last_security_training: null }, // High Risk, No Training
+            { email: 'pam.beesly@inssage.com', full_name: 'Pam Beesly', department: 'Operations', role: 'Office Administrator', status: 'On Leave', risk_score: 8, last_security_training: '2024-12-05' },
+            { email: 'jim.halpert@inssage.com', full_name: 'Jim Halpert', department: 'Sales', role: 'Sales Lead', status: 'Active', risk_score: 25, last_security_training: '2025-01-05' },
+            { email: 'dwight.schrute@inssage.com', full_name: 'Dwight Schrute', department: 'Sales', role: 'Assistant to RM', status: 'Active', risk_score: 65, last_security_training: '2023-05-10' }, // Expired Training, High Risk
+            { email: 'angela.martin@inssage.com', full_name: 'Angela Martin', department: 'Finance', role: 'Head of Accounting', status: 'Active', risk_score: 2, last_security_training: '2024-10-01' },
+            { email: 'oscar.martinez@inssage.com', full_name: 'Oscar Martinez', department: 'Finance', role: 'Accountant', status: 'Active', risk_score: 10, last_security_training: '2024-09-15' },
+            { email: 'stanley.hudson@inssage.com', full_name: 'Stanley Hudson', department: 'Sales', role: 'Sales Exec', status: 'Active', risk_score: 40, last_security_training: null },
+            { email: 'kelly.kapoor@inssage.com', full_name: 'Kelly Kapoor', department: 'Support', role: 'Customer Service', status: 'Active', risk_score: 55, last_security_training: '2024-08-20' },
+            { email: 'toby.flenderson@inssage.com', full_name: 'Toby Flenderson', department: 'HR', role: 'HR Rep', status: 'Active', risk_score: 0, last_security_training: '2025-01-15' },
+            { email: 'creed.bratton@inssage.com', full_name: 'Creed Bratton', department: 'Quality Assurance', role: 'QA Director', status: 'Active', risk_score: 95, last_security_training: null }, // Very High Risk
+        ];
+
+        const { data: employees } = await supabase.from('employees').upsert(employeesList, { onConflict: 'email' }).select();
+
+        // 2. Documents (only if employees exist to link to)
+        if (employees && employees.length > 0) {
+            const sarah = employees.find(e => e.email === 'sarah.connor@inssage.com');
+            const john = employees.find(e => e.email === 'john.doe@inssage.com');
+
+            if (sarah && john) {
+                await supabase.from('documents').upsert([
+                    { title: 'Acceptable Use Policy', type: 'Policy', status: 'Active', risk_level: 'High', owner_id: sarah.id, version: '3.0', guardrails_count: 15 },
+                    { title: 'Incident Response Plan', type: 'Procedure', status: 'Review Needed', risk_level: 'Critical', owner_id: sarah.id, version: '1.2', guardrails_count: 8 },
+                    { title: 'Employee Handbook 2024', type: 'Policy', status: 'Active', risk_level: 'Low', owner_id: john.id, version: '2024.1', guardrails_count: 5 },
+                    { title: 'SOC2 Type II Report', type: 'Report', status: 'Active', risk_level: 'Medium', owner_id: sarah.id, version: '2023-Final', guardrails_count: 0 },
+                    { title: 'Remote Work Policy', type: 'Policy', status: 'Active', risk_level: 'Medium', owner_id: john.id, version: '1.5', guardrails_count: 3 },
+                    { title: 'Data Classification Standard', type: 'Policy', status: 'Active', risk_level: 'High', owner_id: sarah.id, version: '2.0', guardrails_count: 10 }
+                ], { onConflict: 'title' });
+            }
+        }
+
+        // 3. Seed Compliance data now that we have employees and docs
+        await this.seedComplianceData();
+    },
+
+    // --- CRUD Operations ---
+
+    async uploadDocumentFile(file: File) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+            .from('documents')
+            .upload(filePath, file);
+
+        if (uploadError) {
+            throw uploadError;
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+            .from('documents')
+            .getPublicUrl(filePath);
+
+        return publicUrl;
+    },
+
+    async createDocumentRecord(doc: any) {
+        const { data, error } = await supabase.from('documents').insert(doc).select().single();
+        if (error) throw error;
+        return data;
+    },
+
+    async updateDocument(id: string, updates: any) {
+        const { data, error } = await supabase.from('documents').update(updates).eq('id', id).select().single();
+        if (error) throw error;
+        return data;
+    },
+
+    async deleteDocument(id: string) {
+        const { error } = await supabase.from('documents').delete().eq('id', id);
+        if (error) throw error;
+    },
+
+    // --- Compliance & Control Analytics ---
+
+    async acknowledgeDocument(documentId: string, employeeId: string) {
+        const { error } = await supabase.from('document_acknowledgments').insert({
+            document_id: documentId,
+            employee_id: employeeId
+        });
+        if (error) throw error;
+    },
+
+    async getComplianceStats(documentId: string) {
+        // Simple calculation: Count Acks vs Total Active Employees
+        // In real world, filter by 'applicable_department'
+
+        const { count: totalEmployees } = await supabase.from('employees').select('*', { count: 'exact', head: true }).eq('status', 'Active');
+        const { count: ackCount } = await supabase.from('document_acknowledgments').select('*', { count: 'exact', head: true }).eq('document_id', documentId);
+
+        const total = totalEmployees || 1;
+        const acknowledged = ackCount || 0;
+
+        return {
+            total,
+            acknowledged,
+            complianceRate: Math.round((acknowledged / total) * 100)
+        };
+    },
+
+    async seedComplianceData() {
+        console.log("Seeding Compliance Acks...");
+        // Fetch docs and employees
+        const { data: docs } = await supabase.from('documents').select('id, title');
+        const { data: emps } = await supabase.from('employees').select('id');
+
+        if (!docs || !emps) return;
+
+        // Create some sample acks
+        const acks: any[] = [];
+        for (const doc of docs) {
+            // Randomly acknowledge specific docs (Policies)
+            if (doc.title.includes('Policy') || doc.title.includes('Handbook')) {
+                for (const emp of emps) {
+                    if (Math.random() > 0.3) { // 70% compliance chance
+                        acks.push({
+                            document_id: doc.id,
+                            employee_id: emp.id
+                        });
+                    }
+                }
+            }
+        }
+
+        if (acks.length > 0) {
+            await supabase.from('document_acknowledgments').upsert(acks, { onConflict: 'document_id,employee_id' });
+        }
+    },
+
+    async getPeopleMetrics() {
+        // 1. Fetch Employees for Risk & Training
+        const { data: employees, error: empError } = await supabase
+            .from('employees')
+            .select('id, risk_score, last_security_training, status');
+
+        if (empError) throw empError;
+
+        // 2. Fetch Aggregated Acknowledgments
+        // We need: (Total Policies * Active Employees) - Actual Acks = Pending
+        const { count: policyCount } = await supabase.from('documents').select('*', { count: 'exact', head: true }).eq('type', 'Policy').eq('status', 'Active');
+        const { count: ackCount } = await supabase.from('document_acknowledgments').select('*', { count: 'exact', head: true });
+
+        const activeEmployees = employees?.filter(e => e.status === 'Active') || [];
+        const totalRequired = (policyCount || 0) * activeEmployees.length;
+        const pending = Math.max(0, totalRequired - (ackCount || 0));
+
+        // 3. Calculate KPIs
+        const highRiskCount = employees?.filter(e => (e.risk_score || 0) > 50).length || 0;
+
+        // Training: Count employees trained in 2024/2025 (last ~year)
+        // For simplicity, just check if last_security_training is not null
+        const trainedCount = employees?.filter(e => e.last_security_training).length || 0;
+        const totalCount = employees?.length || 1;
+        const trainingRate = Math.round((trainedCount / totalCount) * 100);
+
+        // Security Score: 100 - Avg Risk Score
+        const totalRisk = employees?.reduce((sum, e) => sum + (e.risk_score || 0), 0) || 0;
+        const avgRisk = Math.round(totalRisk / totalCount);
+        const securityScore = Math.max(0, 100 - avgRisk);
+
+        return {
+            highRiskEmployees: highRiskCount,
+            trainingCompletion: trainingRate,
+            pendingAttestations: pending,
+            avgSecurityScore: securityScore
+        };
+    }
 };
