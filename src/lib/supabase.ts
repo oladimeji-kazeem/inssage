@@ -14,8 +14,16 @@ const getEnvVar = (key: string) => {
 const supabaseUrl = getEnvVar('VITE_SUPABASE_URL');
 const supabaseAnonKey = getEnvVar('VITE_SUPABASE_ANON_KEY');
 
-if (!supabaseUrl || !supabaseAnonKey) {
-    console.warn('Supabase URL or Anon Key missing in environment variables');
+let supabaseClient: any = null;
+
+if (supabaseUrl && supabaseAnonKey) {
+    try {
+        supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+    } catch (e) {
+        console.warn('Failed to initialize Supabase client:', e);
+    }
+} else {
+    console.warn('Supabase URL or Anon Key missing. App will run in mock mode.');
 }
 
-export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '');
+export const supabase = supabaseClient;
