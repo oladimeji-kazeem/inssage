@@ -2253,7 +2253,7 @@ export const analyticsService = {
         ], { onConflict: 'control_code' });
 
         // 3. Audits
-        const { data: audit } = await supabase.from('internal_audits').upsert([
+        await supabase.from('internal_audits').upsert([
             { audit_code: 'IA-24-Q1', title: 'Q1 Financial Audit', scope: 'Payroll & Expenses', status: 'Completed', auditor: 'Ernst & Young', start_date: '2024-01-10', end_date: '2024-02-15' },
             { audit_code: 'IA-24-Q2', title: 'IT Security Audit', scope: 'Access Controls', status: 'In Progress', auditor: 'Internal Team', start_date: '2024-04-01', end_date: '2024-04-30' }
         ], { onConflict: 'audit_code' });

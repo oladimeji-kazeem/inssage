@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '../components/ui/Card';
 import { Tabs } from '../components/ui/Tabs';
 import { Select } from '../components/ui/Select';
-import { Shield, AlertTriangle, CheckCircle, Activity, Lock, TrendingUp, AlertCircle, Database, UserCheck } from 'lucide-react';
+import { Shield, AlertTriangle, CheckCircle, Activity, Lock, TrendingUp, AlertCircle, Database } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ScatterChart, Scatter, Cell, RadialBarChart, RadialBar, Legend, BarChart, Bar, PieChart, Pie } from 'recharts';
 import './Analytics.css';
 import { analyticsService } from '../services/analyticsService';

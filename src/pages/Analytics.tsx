@@ -4,20 +4,19 @@ import {
     ScatterChart, Scatter, AreaChart, Area, PieChart, Pie, Cell, LineChart, Line,
     Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ComposedChart, Legend, ReferenceLine, LabelList
 } from 'recharts';
-import { TrendingUp, Users, Clock, CheckCircle, Download, DollarSign } from 'lucide-react';
+import { Users, Clock, CheckCircle, Download, DollarSign } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Tabs } from '../components/ui/Tabs';
 import './Analytics.css';
 
 import { analyticsService } from '../services/analyticsService';
-import type { AnalyticsKPI } from '../services/analyticsService';
 import { Select } from '../components/ui/Select';
 
 
 
 export const Analytics: React.FC = () => {
     const [activeTab, setActiveTab] = useState('hris');
-    const [isLoading, setIsLoading] = useState(true);
+    // const [isLoading, setIsLoading] = useState(true); // Unused
     // Data State
     const [data, setData] = useState<any>({
         // KPIs
@@ -186,7 +185,7 @@ export const Analytics: React.FC = () => {
 
                     enpsDist, sentimentTenure, keyDrivers, responseRate,
 
-                    compliance, hiringFunnel, appsVsHires, talentMatrix, perfVsTenure, skillGap, trainingImpact, goalCompletion,
+                    compliance, hiringFunnel, appsVsHires, talentMatrix, perfVsTenure, skillGap, goalCompletion,
                     budgetVsActual, compBreakdown, deptSentiment, slaCompliance,
 
                     resolutionTime, requestStatus, agentPerf, backlogTrend,
@@ -254,7 +253,7 @@ export const Analytics: React.FC = () => {
                     recruiterPerformance, timeToFillRole, costPerHireTrend, qualityOfHireTrend,
                     talentMatrix, deptPerf, reviewProgress,
                     skillGap: skillGap || [],
-                    trainingImpact: trainingImpact || [],
+                    // trainingImpact: trainingImpact || [], // Removed duplicate
                     goalCompletion: goalCompletion || [],
                     successionPlanning,
                     promotionReadiness, pipOutcomes, managerBias, highPerformerRetention, benefitsDistribution, participationByDept, ticketReopenRate,
@@ -305,7 +304,7 @@ export const Analytics: React.FC = () => {
             } catch (err) {
                 console.error(err);
             } finally {
-                setIsLoading(false);
+                // setIsLoading(false);
             }
         };
         // FORCE SEED for new features
@@ -582,9 +581,9 @@ export const Analytics: React.FC = () => {
 
     const {
         // KPIs
-        hrisKpis, recKpis, perfKpis, payrollKpis, sentimentKpis, requestKpis,
+        hrisKpis, perfKpis, payrollKpis, sentimentKpis, requestKpis,
         lifeBalanceKpis, skillsKpis, trainingKpis, goalsKpis, assetsKpis,
-        keyResults, wfhTrends, skillHeatmap, roiAnalysis, warrantyList,
+        wfhTrends, skillHeatmap, roiAnalysis, warrantyList,
         overtimeTrends, workPatterns, wellnessEngagement, burnoutRisk,
         skillAcquisition, skillSupplyDemand,
 
@@ -605,7 +604,7 @@ export const Analytics: React.FC = () => {
         sourceOfHire: sourceOfHireData,
         timeToHire: timeToHireData,
         pipelineStatus: currentPipelineData,
-        rejectionReasons: rejectionReasonsData,
+        // rejectionReasons: rejectionReasonsData, // Removed unused
         appsVsHires: applicationsVsHiresData,
 
         talentMatrix: nineBoxData,
@@ -613,7 +612,7 @@ export const Analytics: React.FC = () => {
         reviewProgress: reviewProgressData,
         successionPlanning: successionPlanningData,
         skillGap: skillGapData,
-        trainingImpact: trainingImpactData,
+        // trainingImpact: trainingImpactData, // Unused
         goalCompletion: goalCompletionData,
 
         promotionReadiness: promotionReadinessData, pipOutcomes: pipOutcomesData,
@@ -1149,7 +1148,7 @@ export const Analytics: React.FC = () => {
                                                 performance: typeof item.performance === 'string' ? parseFloat(item.performance) : item.performance
                                             };
                                         })} fill="#8884d8">
-                                            {performanceData.map((entry: any, index: number) => (
+                                            {performanceData.map((_entry: any, index: number) => (
                                                 <Cell key={`cell-${index}`} fill="#3b82f6" />
                                             ))}
                                         </Scatter>
@@ -1814,7 +1813,10 @@ export const Analytics: React.FC = () => {
                         <div className="charts-grid">
                             <Card className="chart-placeholder">
                                 <h3 className="chart-title">Training Impact on Performance</h3>
-                                <div style={{ width: '100%', height: 300 }}>
+                                <div className="h-[300px] flex items-center justify-center text-gray-400">
+                                    Chart disabled (Data unavailable)
+                                </div>
+                                {/* <div style={{ width: '100%', height: 300 }}>
                                     <ResponsiveContainer>
                                         <ComposedChart data={trainingImpactData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                                             <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -1827,7 +1829,7 @@ export const Analytics: React.FC = () => {
                                             <Line yAxisId="right" type="monotone" dataKey="score" name="Avg Perf Score" stroke="#ef4444" strokeWidth={2} />
                                         </ComposedChart>
                                     </ResponsiveContainer>
-                                </div>
+                                </div> */}
                             </Card>
                             <Card className="chart-placeholder">
                                 <h3 className="chart-title">Department Goal Completion</h3>

@@ -9,9 +9,10 @@ import { Integrations } from './pages/Integrations';
 import { Workflows } from './pages/Workflows';
 import { Analytics } from './pages/Analytics';
 import { ControlPlane } from './pages/ControlPlane';
-import { AuditLogs } from './pages/AuditLogs';
 import { MeetingCopilot } from './pages/MeetingCopilot';
 import { Settings } from './pages/Settings';
+import { UserManagement } from './pages/UserManagement';
+import { Governance } from './pages/Governance';
 
 function App() {
   return (
@@ -32,6 +33,8 @@ function App() {
           <Route path="meetings" element={<MeetingCopilot />} />
           <Route path="settings" element={<Settings />} />
           <Route path="profile" element={<Settings />} /> {/* Direct to settings for profile */}
+          <Route path="admin/users" element={<UserManagement />} />
+          <Route path="governance" element={<Governance />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

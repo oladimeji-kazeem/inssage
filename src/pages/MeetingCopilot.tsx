@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mic, Pause, StopCircle, Download, User } from 'lucide-react';
+import { Pause, StopCircle, Download } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';

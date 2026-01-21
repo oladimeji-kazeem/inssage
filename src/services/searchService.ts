@@ -26,7 +26,7 @@ export interface ChatResponse {
 
 // --- RAG Helper ---
 // Simulates an LLM generation step using retrieved context
-const generateRAGResponse = (query: string, context: SearchResult[]): string => {
+const generateRAGResponse = (_query: string, context: SearchResult[]): string => {
     if (context.length === 0) return "I couldn't find any information in the knowledge base to answer that.";
 
     // Simple Template-based "Generation"

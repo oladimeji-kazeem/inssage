@@ -1,5 +1,4 @@
-import { analyticsService } from '../services/analyticsService';
-import { supabase } from '../lib/supabase'; // This imports the frontend client which might fail in node
+// Imports removed
 
 // We need to shim the service or just copy the seed logic.
 // Simpler: Just delete analytics tables content and let the app re-seed on reload?

@@ -1,0 +1,9 @@
+/* Switch CSS done via Tailwind in component, but adding wrapper for safety */
+.switch-container.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.switch-container.disabled * {
+    cursor: not-allowed;
+}

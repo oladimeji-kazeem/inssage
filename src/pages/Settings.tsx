@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
-import { Badge } from '../components/ui/Badge';
-import { User, Bell, Lock, Globe, Shield } from 'lucide-react';
+import { User, Bell, Lock, Shield } from 'lucide-react';
 
 export const Settings: React.FC = () => {
     const [activeTab, setActiveTab] = useState('profile');
