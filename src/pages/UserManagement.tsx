@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { userService } from '../services/userService';
 import type { AppUser, AppRole } from '../services/userService';
-import { Card } from '../components/ui/Card';
+// import { Card } from '../components/ui/Card';
 import { UserModal } from '../components/user_management/UserModal';
 import { RoleModal } from '../components/user_management/RoleModal';
 import { RBACAnalytics } from '../components/user_management/RBACAnalytics';
-import { Shield, Users, Edit2, Trash2, Plus, Search, BarChart2, RefreshCw, UserPlus } from 'lucide-react';
+import { Shield, Users, Edit2, Trash2, Search, BarChart2, UserPlus } from 'lucide-react';
 import './Governance.css'; // Reusing premium styles
 
 export const UserManagement: React.FC = () => {

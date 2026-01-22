@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import {
-    Search, Bookmark, Copy, Play, Zap, FileText,
-    Shield, Code, PenTool, MessageSquare, Briefcase, Plus, Users, LayoutGrid
+    Search, Bookmark, Play, Zap, FileText,
+    Shield, Code, PenTool, MessageSquare, Briefcase, Plus, Users
 } from 'lucide-react';
-import { Card } from '../components/ui/Card';
+// import { Card } from '../components/ui/Card';
 import './Prompts.css';
 
 interface Prompt {

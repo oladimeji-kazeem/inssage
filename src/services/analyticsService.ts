@@ -115,7 +115,8 @@ export const analyticsService = {
             .select('*')
             .eq('chart_id', chartId);
         if (error) throw error;
-        return data.map(d => d.data); // Return the 'data' JSONB column content
+        const safeData = data || [];
+        return safeData.map((d: any) => d.data); // Return the 'data' JSONB column content
     },
 
     async getKeyResults() {
@@ -325,7 +326,7 @@ export const analyticsService = {
 
                 if (createdJobs) {
                     console.log('Seeding Applicants (High Volume)...');
-                    const applicants = createdJobs.flatMap(job =>
+                    const applicants = createdJobs.flatMap((job: any) =>
                         Array.from({ length: Math.floor(Math.random() * 40) + 10 }).map(() => ({
                             job_id: job.id,
                             first_name: 'Cand',
@@ -345,7 +346,7 @@ export const analyticsService = {
             console.log('Seeding Performance Reviews...');
             const { data: emps } = await supabase.from('employees').select('id');
             if (emps && emps.length > 0) {
-                const reviews = emps.map(e => ({
+                const reviews = emps.map((e: any) => ({
                     employee_id: e.id,
                     review_period: '2023-Q4',
                     rating: (Math.random() * 2 + 3).toFixed(1), // 3.0 to 5.0
@@ -362,7 +363,7 @@ export const analyticsService = {
             console.log('Seeding Payroll Records...');
             const { data: emps } = await supabase.from('employees').select('id, salary');
             if (emps && emps.length > 0) {
-                const records = emps.map(e => ({
+                const records = emps.map((e: any) => ({
                     employee_id: e.id,
                     pay_period: '2024-01-01',
                     base_salary: (e.salary || 60000) / 12,
@@ -387,7 +388,7 @@ export const analyticsService = {
             if (createdTypes) {
                 const { data: emps } = await supabase.from('employees').select('id');
                 if (emps && emps.length > 0) {
-                    const requests = emps.flatMap(e => {
+                    const requests = emps.flatMap((e: any) => {
                         return Array.from({ length: Math.floor(Math.random() * 8) + 4 }).map(() => {
                             const type = createdTypes[Math.floor(Math.random() * createdTypes.length)];
                             const start = new Date(2023, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28));
@@ -424,7 +425,7 @@ export const analyticsService = {
             if (createdSkills) {
                 const { data: emps } = await supabase.from('employees').select('id');
                 if (emps && emps.length > 0) {
-                    const empSkills = emps.flatMap(e =>
+                    const empSkills = emps.flatMap((e: any) =>
                         Array.from({ length: Math.floor(Math.random() * 3) + 3 }).map(() => {
                             const skill = createdSkills[Math.floor(Math.random() * createdSkills.length)];
                             return {
@@ -435,8 +436,8 @@ export const analyticsService = {
                             };
                         })
                     );
-                    const uniqueEmpSkills = empSkills.filter((idx, index, self) =>
-                        index === self.findIndex((t) => (t.employee_id === idx.employee_id && t.skill_id === idx.skill_id))
+                    const uniqueEmpSkills = empSkills.filter((idx: any, index: number, self: any[]) =>
+                        index === self.findIndex((t: any) => (t.employee_id === idx.employee_id && t.skill_id === idx.skill_id))
                     );
                     await supabase.from('employee_skills').insert(uniqueEmpSkills);
                 }
@@ -454,7 +455,7 @@ export const analyticsService = {
             const { data: allSkills } = await supabase.from('skills').select('id');
 
             if (allJobs && allSkills) {
-                const jobSkills = allJobs.flatMap(job => {
+                const jobSkills = allJobs.flatMap((job: any) => {
                     // Assign 2-5 random skills per job
                     const count = Math.floor(Math.random() * 4) + 2;
                     const shuffled = [...allSkills].sort(() => 0.5 - Math.random());
@@ -486,7 +487,7 @@ export const analyticsService = {
             if (createdCourses) {
                 const { data: emps } = await supabase.from('employees').select('id');
                 if (emps && emps.length > 0) {
-                    const completions = emps.flatMap(e =>
+                    const completions = emps.flatMap((e: any) =>
                         Array.from({ length: Math.floor(Math.random() * 3) }).map(() => {
                             const course = createdCourses[Math.floor(Math.random() * createdCourses.length)];
                             return {
@@ -509,7 +510,7 @@ export const analyticsService = {
             console.log('Seeding Goals...');
             const { data: emps } = await supabase.from('employees').select('id');
             if (emps && emps.length > 0) {
-                const goals = emps.flatMap(e =>
+                const goals = emps.flatMap((e: any) =>
                     Array.from({ length: Math.floor(Math.random() * 4) + 1 }).map((_, i) => ({
                         employee_id: e.id,
                         title: `Q${i + 1} Performance Goal`,
@@ -529,7 +530,7 @@ export const analyticsService = {
             console.log('Seeding Assets...');
             const { data: emps } = await supabase.from('employees').select('id');
             if (emps && emps.length > 0) {
-                const assets = emps.flatMap(e => {
+                const assets = emps.flatMap((e: any) => {
                     if (Math.random() > 0.8) return [];
                     return [{
                         assigned_to: e.id,
@@ -550,7 +551,7 @@ export const analyticsService = {
             console.log('Seeding Onboarding...');
             const { data: emps } = await supabase.from('employees').select('id');
             if (emps && emps.length > 0) {
-                const tasks = emps.slice(0, 5).flatMap(e => [
+                const tasks = emps.slice(0, 5).flatMap((e: any) => [
                     { employee_id: e.id, title: 'IT Setup', status: 'Completed', completed_at: new Date().toISOString() },
                     { employee_id: e.id, title: 'HR Orientation', status: 'In Progress', due_date: new Date().toISOString() }
                 ]);
@@ -2093,7 +2094,7 @@ export const analyticsService = {
             console.log('Seeding Key Results for OKRs...');
             const { data: goals } = await supabase.from('goals').select('id');
             if (goals && goals.length > 0) {
-                const krs = goals.flatMap(g => [
+                const krs = goals.flatMap((g: any) => [
                     {
                         goal_id: g.id,
                         description: 'Reach 50% Milestone',
@@ -2330,8 +2331,8 @@ export const analyticsService = {
 
         // 2. Documents (only if employees exist to link to)
         if (employees && employees.length > 0) {
-            const sarah = employees.find(e => e.email === 'sarah.connor@inssage.com');
-            const john = employees.find(e => e.email === 'john.doe@inssage.com');
+            const sarah = employees.find((e: any) => e.email === 'sarah.connor@inssage.com');
+            const john = employees.find((e: any) => e.email === 'john.doe@inssage.com');
 
             if (sarah && john) {
                 await supabase.from('documents').upsert([
@@ -2457,21 +2458,22 @@ export const analyticsService = {
         const { count: policyCount } = await supabase.from('documents').select('*', { count: 'exact', head: true }).eq('type', 'Policy').eq('status', 'Active');
         const { count: ackCount } = await supabase.from('document_acknowledgments').select('*', { count: 'exact', head: true });
 
-        const activeEmployees = employees?.filter(e => e.status === 'Active') || [];
+        const safeEmployees = employees || [];
+        const activeEmployees = safeEmployees.filter((e: any) => e.status === 'Active');
         const totalRequired = (policyCount || 0) * activeEmployees.length;
         const pending = Math.max(0, totalRequired - (ackCount || 0));
 
         // 3. Calculate KPIs
-        const highRiskCount = employees?.filter(e => (e.risk_score || 0) > 50).length || 0;
+        const highRiskCount = safeEmployees.filter((e: any) => (e.risk_score || 0) > 50).length;
 
         // Training: Count employees trained in 2024/2025 (last ~year)
         // For simplicity, just check if last_security_training is not null
-        const trainedCount = employees?.filter(e => e.last_security_training).length || 0;
-        const totalCount = employees?.length || 1;
+        const trainedCount = safeEmployees.filter((e: any) => e.last_security_training).length;
+        const totalCount = safeEmployees.length || 1;
         const trainingRate = Math.round((trainedCount / totalCount) * 100);
 
         // Security Score: 100 - Avg Risk Score
-        const totalRisk = employees?.reduce((sum, e) => sum + (e.risk_score || 0), 0) || 0;
+        const totalRisk = safeEmployees.reduce((sum: number, e: any) => sum + (e.risk_score || 0), 0);
         const avgRisk = Math.round(totalRisk / totalCount);
         const securityScore = Math.max(0, 100 - avgRisk);
 

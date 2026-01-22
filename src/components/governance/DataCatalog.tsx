@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { governanceService } from '../../services/governanceService';
 import type { DataAsset } from '../../services/governanceService';
-import { Search, Database, FileText, Globe, Server, Tag, Info } from 'lucide-react';
+import { Search, Database, FileText, Globe, Server, Info } from 'lucide-react';
 import '../../pages/Governance.css'; // Import the new styles
 
 export const DataCatalog: React.FC = () => {

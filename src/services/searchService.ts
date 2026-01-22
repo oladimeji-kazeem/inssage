@@ -58,7 +58,7 @@ export const searchService = {
                     .ilike('title', `%${query}%`) // Fallback to keyword if no vector search
                     .limit(3);
 
-                return (data || []).map(doc => ({
+                return (data || []).map((doc: any) => ({
                     source: 'Documents',
                     title: doc.title,
                     description: `${doc.type} (v${doc.version})`,
@@ -77,7 +77,7 @@ export const searchService = {
                     .or(`full_name.ilike.%${query}%, role.ilike.%${query}%`)
                     .limit(3);
 
-                return (data || []).map(emp => ({
+                return (data || []).map((emp: any) => ({
                     source: 'Employees',
                     title: emp.full_name,
                     description: `${emp.role} - ${emp.department}`,
@@ -93,7 +93,7 @@ export const searchService = {
                 const [risks] = await Promise.all([
                     supabase.from('risks').select('*').ilike('risk_description', `%${query}%`).limit(3)
                 ]);
-                return (risks.data || []).map(r => ({
+                return (risks.data || []).map((r: any) => ({
                     source: 'GRC',
                     title: r.risk_description.substring(0, 50) + '...',
                     description: `Risk Impact: ${r.impact}`,

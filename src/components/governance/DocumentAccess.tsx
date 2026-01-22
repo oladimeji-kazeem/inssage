@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
-    Users, Search, CheckCircle, Clock,
-    AlertCircle, FileText, ChevronDown, Filter
+    Search, CheckCircle, Clock,
+    AlertCircle, FileText
 } from 'lucide-react';
 import '../../pages/Governance.css';
 

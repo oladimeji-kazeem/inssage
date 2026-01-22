@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card } from '../ui/Card';
+// import { Card } from '../ui/Card';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     PieChart, Pie, Cell, Legend, LineChart, Line
@@ -27,7 +27,7 @@ export const RBACAnalytics: React.FC = () => {
             setUsers(u);
 
             const dist = r.map(role => {
-                const count = u.filter(user => user.roles?.some((ur: AppRole) => ur.id === role.id)).length;
+                const count = u.filter((user: AppUser) => user.roles?.some((ur: AppRole) => ur.id === role.id)).length;
                 return { name: role.name, count };
             }).sort((a, b) => b.count - a.count);
             setRoleDistData(dist);
@@ -39,11 +39,11 @@ export const RBACAnalytics: React.FC = () => {
                 { name: 'Custom Roles', value: custCount, color: '#10b981' } // Emerald-500
             ]);
 
-            const risk = u.filter(user => user.roles?.some((ur: AppRole) => ur.name.toLowerCase().includes('admin')));
+            const risk = u.filter((user: AppUser) => user.roles?.some((ur: AppRole) => ur.name.toLowerCase().includes('admin')));
             setHighRiskUsers(risk);
 
             // Risk by Department Calculation
-            const deptRisk = u.reduce((acc: any, user) => {
+            const deptRisk = u.reduce((acc: any, user: AppUser) => {
                 if (!acc[user.department]) acc[user.department] = 0;
                 if (user.roles?.some((ur: AppRole) => ur.name.toLowerCase().includes('admin'))) {
                     acc[user.department]++;
@@ -89,7 +89,7 @@ export const RBACAnalytics: React.FC = () => {
 
             {/* KPI Grid (8 Cards) */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem' }}>
-                <Card className="items-center justify-between p-5 bg-white border-gray-100 shadow-sm flex hover:shadow-md transition-shadow group h-full">
+                <div className="items-center justify-between p-5 bg-white border border-gray-100 shadow-sm flex hover:shadow-md transition-shadow group h-full rounded-lg">
                     <div>
                         <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Total Users</p>
                         <h3 className="text-3xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{users.length}</h3>
@@ -97,9 +97,9 @@ export const RBACAnalytics: React.FC = () => {
                     <div className="p-3 bg-blue-50 rounded-lg text-blue-600 group-hover:scale-110 transition-transform">
                         <Users size={24} />
                     </div>
-                </Card>
+                </div>
 
-                <Card className="items-center justify-between p-5 bg-white border-gray-100 shadow-sm flex hover:shadow-md transition-shadow group h-full">
+                <div className="items-center justify-between p-5 bg-white border-gray-100 shadow-sm flex hover:shadow-md transition-shadow group h-full rounded-lg">
                     <div>
                         <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Active Roles</p>
                         <h3 className="text-3xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors">{roles.length}</h3>
@@ -107,9 +107,9 @@ export const RBACAnalytics: React.FC = () => {
                     <div className="p-3 bg-purple-50 rounded-lg text-purple-600 group-hover:scale-110 transition-transform">
                         <Shield size={24} />
                     </div>
-                </Card>
+                </div>
 
-                <Card className="items-center justify-between p-5 bg-white border-gray-100 shadow-sm flex hover:shadow-md transition-shadow group h-full">
+                <div className="items-center justify-between p-5 bg-white border-gray-100 shadow-sm flex hover:shadow-md transition-shadow group h-full rounded-lg">
                     <div>
                         <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Privileged Accounts</p>
                         <h3 className="text-3xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors">{highRiskUsers.length}</h3>
@@ -117,9 +117,9 @@ export const RBACAnalytics: React.FC = () => {
                     <div className="p-3 bg-orange-50 rounded-lg text-orange-600 group-hover:scale-110 transition-transform">
                         <Lock size={24} />
                     </div>
-                </Card>
+                </div>
 
-                <Card className="items-center justify-between p-5 bg-white border-gray-100 shadow-sm flex hover:shadow-md transition-shadow group h-full">
+                <div className="items-center justify-between p-5 bg-white border-gray-100 shadow-sm flex hover:shadow-md transition-shadow group h-full rounded-lg">
                     <div>
                         <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Compliance Score</p>
                         <h3 className="text-3xl font-bold text-gray-900 group-hover:text-green-600 transition-colors">98%</h3>
@@ -127,10 +127,10 @@ export const RBACAnalytics: React.FC = () => {
                     <div className="p-3 bg-green-50 rounded-lg text-green-600 group-hover:scale-110 transition-transform">
                         <Activity size={24} />
                     </div>
-                </Card>
+                </div>
 
                 {/* Row 2 KPIs */}
-                <Card className="items-center justify-between p-5 bg-white border-gray-100 shadow-sm flex hover:shadow-md transition-shadow group h-full">
+                <div className="items-center justify-between p-5 bg-white border-gray-100 shadow-sm flex hover:shadow-md transition-shadow group h-full rounded-lg">
                     <div>
                         <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Inactive Users</p>
                         <h3 className="text-3xl font-bold text-gray-900 group-hover:text-gray-600 transition-colors">{inactiveCount}</h3>
@@ -138,9 +138,9 @@ export const RBACAnalytics: React.FC = () => {
                     <div className="p-3 bg-gray-50 rounded-lg text-gray-600 group-hover:scale-110 transition-transform">
                         <Users size={24} className="opacity-50" />
                     </div>
-                </Card>
+                </div>
 
-                <Card className="items-center justify-between p-5 bg-white border-gray-100 shadow-sm flex hover:shadow-md transition-shadow group h-full">
+                <div className="items-center justify-between p-5 bg-white border-gray-100 shadow-sm flex hover:shadow-md transition-shadow group h-full rounded-lg">
                     <div>
                         <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Departments</p>
                         <h3 className="text-3xl font-bold text-gray-900 group-hover:text-teal-600 transition-colors">{uniqueDepts}</h3>
@@ -148,9 +148,9 @@ export const RBACAnalytics: React.FC = () => {
                     <div className="p-3 bg-teal-50 rounded-lg text-teal-600 group-hover:scale-110 transition-transform">
                         <Activity size={24} />
                     </div>
-                </Card>
+                </div>
 
-                <Card className="items-center justify-between p-5 bg-white border-gray-100 shadow-sm flex hover:shadow-md transition-shadow group h-full">
+                <div className="items-center justify-between p-5 bg-white border-gray-100 shadow-sm flex hover:shadow-md transition-shadow group h-full rounded-lg">
                     <div>
                         <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Avg Roles / User</p>
                         <h3 className="text-3xl font-bold text-gray-900 group-hover:text-cyan-600 transition-colors">{avgRoles}</h3>
@@ -158,9 +158,9 @@ export const RBACAnalytics: React.FC = () => {
                     <div className="p-3 bg-cyan-50 rounded-lg text-cyan-600 group-hover:scale-110 transition-transform">
                         <Shield size={24} />
                     </div>
-                </Card>
+                </div>
 
-                <Card className="items-center justify-between p-5 bg-white border-gray-100 shadow-sm flex hover:shadow-md transition-shadow group h-full">
+                <div className="items-center justify-between p-5 bg-white border-gray-100 shadow-sm flex hover:shadow-md transition-shadow group h-full rounded-lg">
                     <div>
                         <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Pending Reviews</p>
                         <h3 className="text-3xl font-bold text-gray-900 group-hover:text-pink-600 transition-colors">5</h3>
@@ -168,12 +168,12 @@ export const RBACAnalytics: React.FC = () => {
                     <div className="p-3 bg-pink-50 rounded-lg text-pink-600 group-hover:scale-110 transition-transform">
                         <AlertTriangle size={24} />
                     </div>
-                </Card>
+                </div>
             </div>
 
             {/* Row 3: User Dist + Dept Risk (Side by Side) */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-                <Card className="p-6 bg-white border-gray-100 shadow-sm">
+                <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-lg">
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h3 className="text-lg font-bold text-gray-800">User Distribution</h3>
@@ -201,9 +201,9 @@ export const RBACAnalytics: React.FC = () => {
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
-                </Card>
+                </div>
 
-                <Card className="p-6 bg-white border-gray-100 shadow-sm">
+                <div className="p-6 bg-white border border-gray-100 shadow-sm rounded-lg">
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h3 className="text-lg font-bold text-gray-800">Departmental Risk</h3>
@@ -224,12 +224,12 @@ export const RBACAnalytics: React.FC = () => {
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
-                </Card>
+                </div>
             </div>
 
             {/* Row 4: Role Comp + Policy Change (Side by Side) */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-                <Card className="p-6 bg-white border-gray-100 shadow-sm h-full flex flex-col">
+                <div className="p-6 bg-white border-gray-100 shadow-sm h-full flex flex-col rounded-lg">
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h3 className="text-lg font-bold text-gray-800">Role Composition</h3>
@@ -265,9 +265,9 @@ export const RBACAnalytics: React.FC = () => {
                             </PieChart>
                         </ResponsiveContainer>
                     </div>
-                </Card>
+                </div>
 
-                <Card className="p-6 bg-white border-gray-100 shadow-sm h-full flex flex-col">
+                <div className="p-6 bg-white border-gray-100 shadow-sm h-full flex flex-col rounded-lg">
                     <div className="mb-6">
                         <h3 className="text-lg font-bold text-gray-800">Policy Change Velocity</h3>
                         <p className="text-sm text-gray-500">Weekly trend of permission modifications</p>
@@ -298,11 +298,11 @@ export const RBACAnalytics: React.FC = () => {
                             </LineChart>
                         </ResponsiveContainer>
                     </div>
-                </Card>
+                </div>
             </div>
 
             {/* Row 5: Security Alerts (Full Width) */}
-            <Card className="bg-red-50 border-red-100 p-6">
+            <div className="bg-red-50 border border-red-100 p-6 rounded-lg">
                 <div className="flex items-center gap-3 mb-4 text-red-700">
                     <div className="p-2 bg-white rounded-lg shadow-sm">
                         <AlertTriangle size={20} />
@@ -331,7 +331,7 @@ export const RBACAnalytics: React.FC = () => {
                         View Full Audit Log
                     </button>
                 </div>
-            </Card>
+            </div>
         </div>
     );
 };

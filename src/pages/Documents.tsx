@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { FileText, MoreHorizontal, AlertTriangle, Upload, X, Edit, UserPlus, Trash2, Loader, Search } from 'lucide-react';
-import { Button } from '../components/ui/Button'; // Kept for logic, but might override styles
-import { Badge } from '../components/ui/Badge';
-import { Card } from '../components/ui/Card';
+// import { Button } from '../components/ui/Button'; // Kept for logic, but might override styles
+// import { Badge } from '../components/ui/Badge';
+// import { Card } from '../components/ui/Card';
 import { analyticsService } from '../services/analyticsService';
 import './Documents.css';
 

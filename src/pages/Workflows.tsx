@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
     Plus, Search, Settings, MoreHorizontal,
-    Zap, Activity, Clock, Play
+    Zap, Activity, Clock
 } from 'lucide-react';
 import './Governance.css';
 

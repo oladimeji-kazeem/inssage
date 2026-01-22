@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import {
     Calendar, Clock, Users, Plus, Trash2, List
 } from 'lucide-react'; // Safe imports
-import { meetingService, Meeting } from '../services/meetingService';
+import { meetingService } from '../services/meetingService';
+import type { Meeting } from '../services/meetingService';
 import './Governance.css';
 
 export const MeetingCopilot: React.FC = () => {
